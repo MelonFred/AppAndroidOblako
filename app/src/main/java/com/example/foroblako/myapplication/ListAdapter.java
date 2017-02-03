@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 class ListAdapter extends BaseAdapter {
@@ -69,6 +71,7 @@ class ListAdapter extends BaseAdapter {
             switch (rowType) {
                 case TYPE_ITEM:
                     convertView = mInflater.inflate(R.layout.cell, null);
+                    holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
                     holder.textView = (TextView) convertView.findViewById(R.id.text);
                     break;
                 case TYPE_SEPARATOR:
@@ -79,6 +82,16 @@ class ListAdapter extends BaseAdapter {
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
+            if (holder.checkBox != null) {
+                holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        MainActivity.Todo totoInFocus = (MainActivity.Todo) buttonView.getTag();
+                        if (totoInFocus.isCompleted == isChecked) return;
+
+                    }
+                });
+            }
         }
         holder.textView.setText(mData.get(position));
 
@@ -87,6 +100,7 @@ class ListAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         public TextView textView;
+        public CheckBox checkBox;
     }
 
 }

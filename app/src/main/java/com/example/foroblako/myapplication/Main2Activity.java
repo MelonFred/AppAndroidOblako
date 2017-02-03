@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -48,13 +49,16 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
+        Bundle b = this.getIntent().getExtras();
+        ArrayList<String> projectsArray = b.getStringArrayList("projectsArray");
 
         projectsList = (ListView) findViewById(R.id.projectsList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.projectlist_cell);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.projectlist_cell, R.id.TextView);
 
-        adapter.addAll();
+        adapter.addAll(projectsArray);
 
         projectsList.setAdapter(adapter);
+
 
     }
 

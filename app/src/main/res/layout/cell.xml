@@ -7,13 +7,12 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/checkBox"
-        android:checked="false"
         android:gravity="left|center_vertical|start"
         android:textColorLink="@color/accentColor"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:fontFamily="sans-serif" />
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:fontFamily="sans-serif"
+        android:id="@+id/checkBox" />
 
     <TextView
         android:id="@+id/text"
@@ -24,6 +23,7 @@
         android:padding="5dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/systemBlackColor"
-        fontPath="fonts/OpenSans-Regular.ttf" />
+        fontPath="fonts/OpenSans-Regular.ttf"
+        android:textSize="18sp" />
 
 </LinearLayout>

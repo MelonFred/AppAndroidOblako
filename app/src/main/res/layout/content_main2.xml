@@ -37,6 +37,9 @@
             android:hint="Навание задачи..."
             android:padding="15dp"
             android:layout_margin="10dp"
+            android:clickable="false"
+            android:forceHasOverlappingRendering="false"
+            android:fitsSystemWindows="false"
             android:filterTouchesWhenObscured="false" />
 
     </android.support.design.widget.TextInputLayout>
@@ -61,6 +64,7 @@
         android:layout_height="match_parent"
         android:id="@+id/projectsList"
         android:layout_marginTop="150dp"
-        fontPath="fonts/OpenSans-Regular.ttf"/>
+        fontPath="fonts/OpenSans-Regular.ttf"
+        android:clickable="true" />
 
 </RelativeLayout>

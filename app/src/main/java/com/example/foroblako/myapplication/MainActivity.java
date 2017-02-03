@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -19,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -28,9 +30,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -40,24 +45,27 @@ public class MainActivity extends AppCompatActivity {
 
     private ListAdapter mAdapter;
     private ListView listView;
-    private List<Project> projects;
-
-
-
+    Bundle b;
 
     static class Project {
-        String id;
+        @SerializedName("id")
+        int id;
+        @SerializedName("title")
         String title;
-        Todo todos;
+        @SerializedName("todos")
+        List<Todo> todos;
     }
 
     static class Todo {
         @SerializedName("id")
-        String todo_id;
+        int todo_id;
+        @SerializedName("text")
         String text;
-        Boolean isCompleted;
-        String project_id;
+        @SerializedName("isCompleted")
+        boolean isCompleted;
     }
+
+    ArrayList<Project> projects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 .build()
         );
 
-
-
-        Ion.with(this)
+       Ion.with(this)
 
                 .load(getString(R.string.kIndexRequest))
 
@@ -94,23 +100,45 @@ public class MainActivity extends AppCompatActivity {
 
                             }
 
-                        }
+                            b = new Bundle();
+                            List<String> string = new ArrayList<>();
 
+                            for (int x = 0; x < projects.size(); x++) {
+                                Project project = projects.get(x);
+                                string.add(project.title);
+                            }
+                            b.putStringArrayList("projectsArray", (ArrayList<String>) string);
+
+                            listView = (ListView) findViewById(R.id.listView);
+
+                            mAdapter = new ListAdapter(listView.getContext());
+
+                            for (int i = 0; i < projects.size(); i++) {
+
+                                Project project = projects.get(i);
+
+                                mAdapter.addSectionHeaderItem(project.title);
+
+                                for (int y = 0; y < project.todos.size(); y++) {
+
+                                    Collections.sort(project.todos, new Comparator<Todo>() {
+                                        public int compare(Todo o1, Todo o2) {
+                                            return o1.todo_id - o2.todo_id;
+                                        }
+                                    });
+
+                                    Todo todo = project.todos.get(y);
+
+                                    mAdapter.addItem(todo.text);
+                                }
+                            }
+
+
+                            listView.setAdapter(mAdapter);
+                        }
                     }
 
                 });
-
-
-        listView = (ListView) findViewById(R.id.listView);
-
-        mAdapter = new ListAdapter(this);
-        for (int i = 0; i < 10 ; i++) {
-
-            mAdapter.addSectionHeaderItem("Заголовок #" + i);
-            mAdapter.addItem("Заголовок #" + i);
-        }
-        listView.setAdapter(mAdapter);
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -119,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
+                intent.putExtras(b);
                 startActivity(intent);
             }
 
@@ -131,5 +160,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
 
 

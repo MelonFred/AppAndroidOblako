@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical" >
 
-    <TextView
-        android:id="@+id/text"
+    <CheckedTextView
+        android:layout_weight="1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#FFF"
@@ -13,6 +13,9 @@
         android:padding="5dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/systemBlackColor"
-        fontPath="fonts/OpenSans-Regular.ttf" />
+        fontPath="fonts/OpenSans-Regular.ttf"
+        android:id="@+id/TextView"
+        android:checkMark="?android:attr/textCheckMark" />/>
+
 
 </LinearLayout>
