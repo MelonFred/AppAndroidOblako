@@ -15,7 +15,8 @@
         android:textColor="@color/systemBlackColor"
         fontPath="fonts/OpenSans-Regular.ttf"
         android:id="@+id/TextView"
-        android:checkMark="?android:attr/textCheckMark" />/>
+        android:checkMark="?android:attr/textCheckMark"
+        android:paddingStart="15dp" />/>
 
 
 </LinearLayout>

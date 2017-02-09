@@ -37,10 +37,10 @@
             android:hint="Навание задачи..."
             android:padding="15dp"
             android:layout_margin="10dp"
-            android:clickable="false"
-            android:forceHasOverlappingRendering="false"
-            android:fitsSystemWindows="false"
-            android:filterTouchesWhenObscured="false" />
+            android:id="@+id/EditText"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
     </android.support.design.widget.TextInputLayout>
 

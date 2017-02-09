@@ -1,23 +1,25 @@
 package com.example.foroblako.myapplication;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -25,6 +27,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class Main2Activity extends AppCompatActivity {
 
     private ListView projectsList;
+    private EditText value;
+    private RelativeLayout interceptor;
+    static CheckedTextView checkedTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +54,37 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
+        interceptor = (RelativeLayout) findViewById(R.id.content_main2);
+        value= (EditText) findViewById(R.id.EditText);
+
+        interceptor.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    value.setFocusable(false);
+                }
+                return v.performClick();
+            }
+        });
+        value.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.setFocusableInTouchMode(true);
+                }
+                return v.performClick();
+            }
+        });
+
         Bundle b = this.getIntent().getExtras();
         ArrayList<String> projectsArray = b.getStringArrayList("projectsArray");
 
         projectsList = (ListView) findViewById(R.id.projectsList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.projectlist_cell, R.id.TextView);
-
-        adapter.addAll(projectsArray);
+        ProjectAdapter adapter = new ProjectAdapter(this, projectsArray);
 
         projectsList.setAdapter(adapter);
-
-
     }
 
 
@@ -79,7 +104,27 @@ public class Main2Activity extends AppCompatActivity {
 
             case R.id.save:
 
-                finish();
+                value = (EditText)findViewById(R.id.EditText);
+
+                if (value.getText().length() > 3 && checkedTextView != null) {
+
+                    JsonObject param = new JsonObject();
+
+                    param.addProperty("text", value.getText().toString());
+
+                    param.addProperty("project_id", checkedTextView.getId());
+
+                    JsonObject params = new JsonObject();
+
+                    params.add("todo", param);
+
+                    Ion.with(getApplicationContext())
+                            .load("POST", "https://still-sea-16524.herokuapp.com/todo")
+                            .setJsonObjectBody(params)
+                            .asJsonObject();
+                    finish();
+                }
+                else Toast.makeText(getApplicationContext(), getString(R.string.alarm), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
